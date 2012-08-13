@@ -45,8 +45,13 @@ function server() {
     }
     exec('make');
     exec('sudo make install');
-    fs.chdir('utils');
-    exec('sudo ./install_server.sh');
+    if (OSX) {
+        fs.chdir('utils');
+        exec('sudo ./install_server.sh');
+    }
+    else {
+        console.log('redis installed in /usr/local/bin.');
+    }
     fs.chdir(cwd);
 }
 function client() {
