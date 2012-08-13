@@ -91,10 +91,56 @@ static JSVAL query(JSARGS args) {
     }
 }
 
+static bool isspace(char c) {
+    return c == ' ' || c == '\t';
+}
 static JSVAL command(JSARGS args) {
     redisContext *c = (redisContext *)JSEXTERN(args[0]);
     String::Utf8Value _query(args[1]->ToString());
-    redisReply *reply = (redisReply *)redisCommand(c, *_query);
+    char *argstr = strdup(*_query);
+    char *in = argstr;
+    int n = 0;
+    while (*in) {
+        while (isspace(*in)) in++;
+        if (*in) {
+            n++;
+            if (*in == '"') {
+                in++;
+                while (*in && *in != '"') in++;
+                if (*in == '"') in++;
+            }
+            else {
+                while (*in && !isspace(*in)) in++;
+            }
+        }
+    }
+    in = argstr;
+    int argc = n;
+    char *argv[n];
+    n = 0;
+    while (*in) {
+        while (isspace(*in)) in++;
+        if (*in) {
+            if (*in == '"') {
+                in++;
+                argv[n++] = in;
+                while (*in && *in != '"') in++;
+                if (*in == '"') {
+                    *in = '\0';
+                    in++;
+                }
+            }
+            else {
+                argv[n++] = in;
+                while (*in && !isspace(*in)) in++;
+                *in++ = '\0';
+            }
+        }
+    }
+    // printf("%s\n", *_query);
+    // redisReply *reply = (redisReply *)redisCommand(c, *_query);
+    redisReply *reply = (redisReply *)redisCommandArgv(c, argc, (const char **)argv, NULL);
+    free(argstr);
     return External::New(reply);    
 }
 
