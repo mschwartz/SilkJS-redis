@@ -6,8 +6,12 @@ var Redis = require('Redis').Redis,
 
 var db;
 
-function main() {
-    db = new Redis();
+function main(host) {
+    host = host || 'localhost:6379';
+    var parts = host.split(':');
+    host = parts[0];
+    var port = parts[1] || 6379;
+    db = new Redis(host, port);
     var stdin = new ReadLine('redis-cli');
     stdin.prompt('redis-cli.js> ');
     while (true) {
