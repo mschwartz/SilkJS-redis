@@ -1,2 +1,3 @@
 src/hiredis
 src/redis
+redis_module.so
