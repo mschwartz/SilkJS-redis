@@ -27,10 +27,11 @@ function main(host) {
             continue;
         }
         try {
-            console.log(print_r(db.command(command)));
+            console.log(print_r(db.command(command)).replace(/\n$/igm, ''));
         }
         catch (e) {
-            console.dir(e);
+            console.log(e.message);
+            // console.dir(e.stack);
         }
     }
 }
