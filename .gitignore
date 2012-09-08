@@ -1,3 +1,4 @@
 src/hiredis
 src/redis
+src/*.o
 redis_module.so

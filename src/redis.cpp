@@ -23,17 +23,17 @@ static JSVAL connect(JSARGS args) {
         return ThrowException(String::Concat(String::New("Redis connect error: "), s));
     }
     free(host);
-    return External::New(c);
+    return Opaque::New(c);
 }
 
 static JSVAL close(JSARGS args) {
-    redisContext *c = (redisContext *)JSEXTERN(args[0]);
+    redisContext *c = (redisContext *)JSOPAQUE(args[0]);
     redisFree(c);
     return Undefined();
 }
 
 static JSVAL query(JSARGS args) {
-    redisContext *c = (redisContext *)JSEXTERN(args[0]);
+    redisContext *c = (redisContext *)JSOPAQUE(args[0]);
     String::Utf8Value _query(args[1]->ToString());
     redisReply *reply = (redisReply *)redisCommand(c, *_query);
 
@@ -95,7 +95,7 @@ static bool isspace(char c) {
     return c == ' ' || c == '\t';
 }
 static JSVAL command(JSARGS args) {
-    redisContext *c = (redisContext *)JSEXTERN(args[0]);
+    redisContext *c = (redisContext *)JSOPAQUE(args[0]);
     String::Utf8Value _query(args[1]->ToString());
     char *argstr = strdup(*_query);
     char *in = argstr;
@@ -141,39 +141,39 @@ static JSVAL command(JSARGS args) {
     // redisReply *reply = (redisReply *)redisCommand(c, *_query);
     redisReply *reply = (redisReply *)redisCommandArgv(c, argc, (const char **)argv, NULL);
     free(argstr);
-    return External::New(reply);    
+    return Opaque::New(reply);    
 }
 
 static JSVAL freeReply(JSARGS args) {
-    redisReply *reply = (redisReply *)JSEXTERN(args[0]);
+    redisReply *reply = (redisReply *)JSOPAQUE(args[0]);
     freeReplyObject(reply);
     return Undefined();
 }
 
 static JSVAL getType(JSARGS args) {
-    redisReply *reply = (redisReply *)JSEXTERN(args[0]);
+    redisReply *reply = (redisReply *)JSOPAQUE(args[0]);
     return Integer::New(reply->type);
 }
 
 static JSVAL getInteger(JSARGS args) {
-    redisReply *reply = (redisReply *)JSEXTERN(args[0]);
+    redisReply *reply = (redisReply *)JSOPAQUE(args[0]);
     return Number::New(reply->integer);
 }
 
 static JSVAL getString(JSARGS args) {
-    redisReply *reply = (redisReply *)JSEXTERN(args[0]);
+    redisReply *reply = (redisReply *)JSOPAQUE(args[0]);
     return String::New(reply->str, reply->len);
 }
 
 static JSVAL getElements(JSARGS args) {
-    redisReply *reply = (redisReply *)JSEXTERN(args[0]);
+    redisReply *reply = (redisReply *)JSOPAQUE(args[0]);
     return Integer::New(reply->elements);
 }
 
 static JSVAL getElement(JSARGS args) {
-    redisReply *reply = (redisReply *)JSEXTERN(args[0]);
+    redisReply *reply = (redisReply *)JSOPAQUE(args[0]);
     int ndx = args[1]->IntegerValue();
-    return External::New(reply->element[ndx]);
+    return Opaque::New(reply->element[ndx]);
 }
 
 extern "C" JSOBJ getExports() {
