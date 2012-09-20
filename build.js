@@ -45,7 +45,7 @@ function server() {
     }
     exec('make');
     exec('sudo make install');
-    if (OSX) {
+    if (!OSX) {
         fs.chdir('utils');
         exec('sudo ./install_server.sh');
     }
