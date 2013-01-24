@@ -36,7 +36,7 @@ function exec(cmd) {
 function server() {
     fs.chdir('src');
     if (!fs.exists('redis')) {
-        exec('git clone https://github.com/antirez/redis.git');
+        exec('git clone https://github.com/redis/redis.git');
         fs.chdir('redis');
     }
     else {
@@ -57,7 +57,7 @@ function server() {
 function client() {
     fs.chdir('src');
     if (!fs.exists('hiredis')) {
-        exec('git clone https://github.com/antirez/hiredis.git');
+        exec('git clone https://github.com/redis/hiredis.git');
         fs.chdir('hiredis');
     }
     else {
