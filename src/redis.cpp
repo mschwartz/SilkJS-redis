@@ -132,8 +132,12 @@ static JSVAL command(JSARGS args) {
             }
             else {
                 argv[n++] = in;
-                while (*in && !isspace(*in)) in++;
-                *in++ = '\0';
+                while (*in && !isspace(*in)) {
+					in++;
+				}
+				if (*in != '\0') {
+                	*in++ = '\0';
+				}
             }
         }
     }
